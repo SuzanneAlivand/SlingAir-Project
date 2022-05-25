@@ -1,30 +1,59 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components";
 
-const Plane = ({}) => {
+const Plane = ({ flight, setSelectedSeat }) => {
   const [seating, setSeating] = useState([]);
+  const [status, setStatus] = useState(false);
+  const [errorUser, setErrorUser] = useState(false);
+  const [value, setValue] = useState("1A");
 
   useEffect(() => {
-    // TODO: get seating data for selected flight
-  }, []);
+    if (flight) {
+      fetch("/api/get-flight")
+        .then((response) => response.json())
+        .then((data) => {
+          const currentFlight = data.data?.find((e) => e.flight === flight);
+          setSeating(currentFlight.seats);
+        })
+        .catch((error) => {
+          setErrorUser(true);
+        })
+        .finally(() => {
+          setStatus(true);
+        });
+    }
+  }, [flight]);
+
+  const handleChoose = (e) => {
+    setSelectedSeat(e.target.value);
+    console.log(e.target.value);
+    setValue(e.target.value);
+  };
 
   return (
     <Wrapper>
       {seating && seating.length > 0 ? (
-        seating.map((seat) => (
-          <SeatWrapper key={`seat-${seat.id}`}>
-            <label>
-              {seat.isAvailable ? (
-                <>
-                  <Seat type="radio" name="seat" onChange={() => {}} />
-                  <Available>{seat.id}</Available>
-                </>
-              ) : (
-                <Unavailable>{seat.id}</Unavailable>
-              )}
-            </label>
-          </SeatWrapper>
-        ))
+        seating.map((seat) => {
+          return (
+            <SeatWrapper key={`seat-${seat.id}`}>
+              <label>
+                {seat.isAvailable ? (
+                  <>
+                    <Seat
+                      type="radio"
+                      name="seat"
+                      onChange={handleChoose}
+                      value={seat.id}
+                    />
+                    <Available className={value === seat.id ? 'checked':null}>{seat.id}</Available>
+                  </>
+                ) : (
+                  <Unavailable>{seat.id}</Unavailable>
+                )}
+              </label>
+            </SeatWrapper>
+          );
+        })
       ) : (
         <Placeholder>Select a Flight to view seating.</Placeholder>
       )}
