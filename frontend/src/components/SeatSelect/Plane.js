@@ -9,11 +9,10 @@ const Plane = ({ flight, setSelectedSeat }) => {
 
   useEffect(() => {
     if (flight) {
-      fetch("/api/get-flight")
+      fetch(`/api/get-flight/${flight}`)
         .then((response) => response.json())
         .then((data) => {
-          const currentFlight = data.data?.find((e) => e.flight === flight);
-          setSeating(currentFlight.seats);
+          setSeating(data.data?.seats);
         })
         .catch((error) => {
           setErrorUser(true);
@@ -45,7 +44,9 @@ const Plane = ({ flight, setSelectedSeat }) => {
                       onChange={handleChoose}
                       value={seat.id}
                     />
-                    <Available className={value === seat.id ? 'checked':null}>{seat.id}</Available>
+                    <Available className={value === seat.id ? "checked" : null}>
+                      {seat.id}
+                    </Available>
                   </>
                 ) : (
                   <Unavailable>{seat.id}</Unavailable>

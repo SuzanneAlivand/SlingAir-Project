@@ -29,7 +29,7 @@ express()
   // ---------------------------------
 
   .get("/api/get-flights", getFlights)
-  .get("/api/get-flight", getFlight)
+  .get("/api/get-flight/:flight", getFlight)
   // I actually get the reservations of specific user with _id, not all the reservation,
   // doesnt seem to be difficult to get the all reservations
   .get("/api/get-reservations/:_id", getReservations)
