@@ -64,16 +64,6 @@ const addReservation = async (req, res) => {
       const db = client.db("Slingair");
       await db.collection("reservations").insertOne(newReservation);
 
-      // var myquery = {
-      //   flight: `${flight}`,
-      //   "seats.id": seat,
-      // };
-      // var newvalue = { $set: { isAvailable: "false" } };
-      // const result = await db.collection("flights").findOne(myquery);
-      // const result = await db
-      //   .collection("flights")
-      //   .updateOne(myquery, newvalue);
-
       const result = await db
         .collection("flights")
         .findOneAndUpdate(
@@ -167,7 +157,7 @@ const deleteReservation = async (req, res) => {
   }
 };
 
-// what we need to update:\? ok lets think we want to change the seat:
+// update
 const updateReservation = async (req, res) => {
   const _id = req.params._id;
   const { seat } = req.body;
